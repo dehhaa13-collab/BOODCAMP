@@ -546,9 +546,15 @@ const HorizontalCamps = ({ ready }) => {
 
   return (
     <section id="camps" ref={sectionRef} className="h-screen bg-transparent flex flex-col justify-center overflow-hidden relative z-10">
-      <div className="px-6 md:px-10 mb-10 w-full flex-shrink-0">
+      <div className="px-6 md:px-10 mb-10 w-full flex-shrink-0 relative">
         <h2 className="font-display text-4xl md:text-5xl font-bold">Архітектура програми</h2>
         <p className="text-lg md:text-xl text-primary mt-2">4 ключові етапи роботи. 8 днів (9 місяців) стратегії.</p>
+        
+        {/* Mobile Swipe Indicator */}
+        <div className="flex md:hidden items-center gap-2 mt-6 text-primary/80 animate-pulse">
+          <span className="text-xs uppercase tracking-widest font-bold">Гортай вбік</span>
+          <ArrowRight className="w-4 h-4" />
+        </div>
       </div>
       <div 
         ref={scrollRef} 
