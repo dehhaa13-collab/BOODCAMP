@@ -452,8 +452,8 @@ const MasterTrap = () => {
   const trapItems = ['Перевантаження', 'Нестабільний дохід', 'Хаос у процесах', 'Залежність бізнесу'];
 
   return (
-    <section id="trap" ref={container} className="py-40 px-4 relative flex items-center justify-center min-h-[80vh] overflow-hidden">
-      <div className="circle-bg absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full -z-10 will-change-transform" style={{ background: 'radial-gradient(circle, rgba(250,204,21,0.08) 0%, transparent 70%)' }} />
+    <section id="trap" ref={container} className="py-20 md:py-40 px-4 relative flex items-center justify-center min-h-[80vh] overflow-hidden">
+      <div className="circle-bg absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] h-[150vw] md:w-[800px] md:h-[800px] rounded-full -z-10 will-change-transform" style={{ background: 'radial-gradient(circle, rgba(250,204,21,0.08) 0%, transparent 70%)' }} />
       <div className="max-w-4xl mx-auto text-center z-10">
         <ShieldAlert className="w-16 h-16 text-primary mx-auto mb-8" />
         <h2 className="font-display text-5xl md:text-7xl font-bold mb-8">Пастка майстра</h2>
@@ -477,8 +477,8 @@ const TheProblem = () => (
   <section id="problem" className="py-32 px-4 my-20 bg-surface/80 text-white text-center border-y border-white/5 relative z-10 glass-card mx-4 rounded-3xl">
     <div className="max-w-4xl mx-auto">
       <h2 className="font-display text-4xl md:text-6xl font-bold mb-10">Головна причина</h2>
-      <p className="text-2xl md:text-4xl font-light mb-8">Проблема не у клієнтах і не у ринку.</p>
-      <div className="inline-block bg-primary text-black px-10 py-5 rounded-sm font-display text-3xl md:text-5xl font-bold shadow-[0_0_30px_rgba(250,204,21,0.3)] uppercase tracking-tighter transform -rotate-1">
+      <p className="text-xl md:text-4xl font-light mb-8">Проблема не у клієнтах і не у ринку.</p>
+      <div className="inline-block bg-primary text-black px-6 py-4 md:px-10 md:py-5 rounded-sm font-display text-2xl md:text-5xl font-bold shadow-[0_0_30px_rgba(250,204,21,0.3)] uppercase tracking-tighter transform -rotate-1">
         Проблема у ролі.
       </div>
       <p className="text-xl md:text-2xl mt-12 text-textMuted font-light">
@@ -505,13 +505,15 @@ const HorizontalCamps = ({ ready }) => {
     // Only initialize GSAP AFTER preloader is done and content is visible
     if (!ready || !sectionRef.current || !scrollRef.current) return;
 
-    // Wait for next frame so the browser has painted with correct dimensions
     const raf = requestAnimationFrame(() => {
       // Clean up previous context if it exists (e.g. on hot reload)
       if (ctxRef.current) ctxRef.current.revert();
 
-      ctxRef.current = gsap.context(() => {
-        // Dynamic function ensures correct calculation even on resize
+      // Use GSAP MatchMedia for responsive animations (only pin on desktop)
+      const mm = gsap.matchMedia();
+      ctxRef.current = mm;
+
+      mm.add("(min-width: 768px)", () => {
         const getScrollWidth = () => {
           if (!scrollRef.current) return 0;
           return scrollRef.current.scrollWidth - window.innerWidth;
@@ -528,7 +530,7 @@ const HorizontalCamps = ({ ready }) => {
             invalidateOnRefresh: true,
           },
         });
-      }, sectionRef);
+      });
     });
 
     return () => {
@@ -539,13 +541,16 @@ const HorizontalCamps = ({ ready }) => {
 
   return (
     <section id="camps" ref={sectionRef} className="h-screen bg-transparent flex flex-col justify-center overflow-hidden relative z-10">
-      <div className="px-10 mb-10 w-full flex-shrink-0">
-        <h2 className="font-display text-5xl font-bold">Архітектура програми</h2>
-        <p className="text-xl text-primary mt-2">4 ключові етапи роботи. 8 днів (9 місяців) стратегії.</p>
+      <div className="px-6 md:px-10 mb-10 w-full flex-shrink-0">
+        <h2 className="font-display text-4xl md:text-5xl font-bold">Архітектура програми</h2>
+        <p className="text-lg md:text-xl text-primary mt-2">4 ключові етапи роботи. 8 днів (9 місяців) стратегії.</p>
       </div>
-      <div ref={scrollRef} className="flex gap-10 px-10 will-change-transform pb-20 pt-10" style={{ width: 'max-content' }}>
+      <div 
+        ref={scrollRef} 
+        className="flex gap-6 md:gap-10 px-6 md:px-10 pb-10 pt-4 overflow-x-auto snap-x snap-mandatory md:overflow-visible no-scrollbar w-full md:w-max will-change-transform"
+      >
         {camps.map((camp) => (
-          <TiltCard key={camp.num} className="flex-shrink-0 w-[85vw] md:w-[60vw] lg:w-[35vw] glass-card p-10 flex flex-col h-[500px] interactive border-white/5 hover:border-primary/30 transition-colors duration-300">
+          <TiltCard key={camp.num} className="snap-center flex-shrink-0 w-[85vw] md:w-[60vw] lg:w-[35vw] glass-card p-6 md:p-10 flex flex-col h-[480px] md:h-[500px] interactive border-white/5 hover:border-primary/30 transition-colors duration-300">
             <div className="bg-primary text-black font-display font-bold text-sm mb-4 px-3 py-1 rounded inline-block w-max uppercase tracking-wider">КЕМП {camp.num}</div>
             <h3 className="text-3xl font-bold mb-2">{camp.title}</h3>
             <p className="text-textMuted mb-8 font-light">{camp.subtitle}</p>
