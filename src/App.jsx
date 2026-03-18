@@ -1,8 +1,8 @@
-import React, { useLayoutEffect, useRef, memo, useState, useEffect, useCallback } from 'react';
+import React, { useLayoutEffect, useRef, useState, useEffect, useCallback, memo } from 'react';
 import { ReactLenis, useLenis } from 'lenis/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, CheckCircle2, TrendingUp, Users, ShieldAlert, Target, Award } from 'lucide-react';
+import { ArrowRight, TrendingUp, Users, ShieldAlert, Target, Award } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -10,14 +10,9 @@ gsap.registerPlugin(ScrollTrigger);
 const CustomCursor = () => {
   const cursorRef = useRef(null);
   const [hovered, setHovered] = useState(false);
-  const [isTouch, setIsTouch] = useState(true);
-
-  useEffect(() => {
-    // Check if it's a touch device
-    if (window.matchMedia('(pointer: fine)').matches) {
-      setIsTouch(false);
-    }
-  }, []);
+  const [isTouch] = useState(() => 
+    typeof window !== 'undefined' ? !window.matchMedia('(pointer: fine)').matches : true
+  );
 
   useEffect(() => {
     if (isTouch) return;

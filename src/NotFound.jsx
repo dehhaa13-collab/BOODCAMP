@@ -7,7 +7,8 @@ const NotFound = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 10);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleMouseMove = (e) => {

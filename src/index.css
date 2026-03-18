@@ -30,12 +30,14 @@
 .text-gradient {
   background: linear-gradient(135deg, #ffffff 0%, #9ca3af 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .primary-gradient {
   background: linear-gradient(135deg, #FACC15 0%, #EAB308 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
