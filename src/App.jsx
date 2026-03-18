@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* ─── Custom Cursor ────────────────────────────────────── */
 const CustomCursor = () => {
-  const [position, setPosition] = useState({ x: -100, y: -100 });
+  const cursorRef = useRef(null);
   const [hovered, setHovered] = useState(false);
   const [isTouch, setIsTouch] = useState(true);
 
@@ -21,8 +21,21 @@ const CustomCursor = () => {
 
   useEffect(() => {
     if (isTouch) return;
-    const onMouseMove = (e) => setPosition({ x: e.clientX, y: e.clientY });
+    
+    let rafId;
+
+    const onMouseMove = (e) => {
+      cancelAnimationFrame(rafId);
+      // Direct raw DOM manipulation to bypass React render for instant zero-lag updates
+      rafId = requestAnimationFrame(() => {
+        if (cursorRef.current) {
+          cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+        }
+      });
+    };
+
     const onMouseOver = (e) => {
+      // Hover scaling logic (still uses state because it changes CSS classes/DOM nodes slowly)
       if (e.target.closest('button, a, .glass-card, .interactive')) {
         setHovered(true);
       } else {
@@ -30,9 +43,10 @@ const CustomCursor = () => {
       }
     };
 
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseover', onMouseOver);
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+    window.addEventListener('mouseover', onMouseOver, { passive: true });
     return () => {
+      cancelAnimationFrame(rafId);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseover', onMouseOver);
     };
@@ -42,12 +56,16 @@ const CustomCursor = () => {
 
   return (
     <div
-      className="fixed top-0 left-0 pointer-events-none z-[99999] transition-transform duration-75 ease-out"
+      ref={cursorRef}
+      className="fixed top-0 left-0 pointer-events-none z-[99999] will-change-transform"
       style={{
-        transform: `translate3d(${position.x}px, ${position.y}px, 0) translate(-50%, -50%) scale(${hovered ? 2.5 : 1})`,
+        transform: `translate3d(-100px, -100px, 0) translate(-50%, -50%)`,
       }}
     >
-      <div className="w-5 h-5 rounded-full bg-primary/80 backdrop-blur-[2px] shadow-[0_0_15px_rgba(250,204,21,0.6)] relative flex items-center justify-center transition-all duration-300">
+      <div 
+        className="w-5 h-5 rounded-full bg-primary/80 backdrop-blur-[2px] shadow-[0_0_15px_rgba(250,204,21,0.6)] relative flex items-center justify-center transition-transform duration-300 ease-out"
+        style={{ transform: `scale(${hovered ? 2.5 : 1})` }}
+      >
         {hovered && <div className="absolute inset-0 rounded-full bg-primary animate-ping opacity-40" />}
       </div>
     </div>
