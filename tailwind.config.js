@@ -7,10 +7,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#0a0a0c', // deep rich black
-        surface: '#121216', // slightly lighter for cards
-        primary: '#c19b76', // elegant gold/bronze
-        primaryHover: '#d5ac83',
+        background: '#000000', // deep rich black
+        surface: '#111111', // slightly lighter for cards
+        primary: '#FACC15', // elegant gold/bronze
+        primaryHover: '#FDE047',
         textMain: '#ffffff',
         textMuted: '#9ca3af',
         accent: '#2c2c31', // subtle borders/accents

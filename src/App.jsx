@@ -39,7 +39,7 @@ const Preloader = ({ onComplete }) => {
       <div
         className="absolute w-[300px] h-[300px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, rgba(193,155,118,0.12) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(250,204,21,0.12) 0%, transparent 70%)',
           animation: 'pulse 2s ease-in-out infinite',
         }}
       />
@@ -50,7 +50,7 @@ const Preloader = ({ onComplete }) => {
           <span
             className="font-display text-7xl md:text-9xl font-bold tracking-tight inline-block"
             style={{
-              background: 'linear-gradient(135deg, #c19b76 0%, #d5ac83 50%, #a4815a 100%)',
+              background: 'linear-gradient(135deg, #FACC15 0%, #FDE047 50%, #EAB308 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               animation: 'preloaderReveal 1s ease-out forwards',
@@ -65,7 +65,7 @@ const Preloader = ({ onComplete }) => {
           <div
             className="h-full rounded-full"
             style={{
-              background: 'linear-gradient(90deg, #c19b76, #d5ac83)',
+              background: 'linear-gradient(90deg, #FACC15, #FDE047)',
               animation: 'loadingBar 1.8s ease-in-out forwards',
             }}
           />
@@ -89,8 +89,8 @@ const ScrollProgress = () => {
         className="h-full will-change-transform"
         style={{
           width: `${progress * 100}%`,
-          background: 'linear-gradient(90deg, #c19b76, #d5ac83, #c19b76)',
-          boxShadow: '0 0 12px rgba(193,155,118,0.4)',
+          background: 'linear-gradient(90deg, #FACC15, #FDE047, #FACC15)',
+          boxShadow: '0 0 12px rgba(250,204,21,0.4)',
           transition: 'width 0.05s linear',
         }}
       />
@@ -167,7 +167,7 @@ const Navigation = () => {
               key={id}
               onClick={() => scrollTo(id)}
               className="relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg group"
-              style={{ color: activeSection === id ? '#c19b76' : '#9ca3af' }}
+              style={{ color: activeSection === id ? '#FACC15' : '#9ca3af' }}
             >
               {/* Active indicator dot */}
               <span
@@ -192,7 +192,7 @@ const Navigation = () => {
               onClick={() => scrollTo(id)}
               className="w-2 h-2 rounded-full transition-all duration-300"
               style={{
-                background: activeSection === id ? '#c19b76' : '#2c2c31',
+                background: activeSection === id ? '#FACC15' : '#2c2c31',
                 transform: activeSection === id ? 'scale(1.3)' : 'scale(1)',
               }}
             />
@@ -206,9 +206,9 @@ const Navigation = () => {
 /* ─── Background ─────────────────────────────────────── */
 const BackgroundEffects = memo(() => (
   <div className="fixed inset-0 -z-0 pointer-events-none overflow-hidden bg-background will-change-transform">
-    <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] animate-blob will-change-transform" style={{ background: 'radial-gradient(circle, rgba(193,155,118,0.15) 0%, transparent 70%)' }} />
-    <div className="absolute top-[30%] right-[-10%] w-[60vw] h-[60vw] animate-blob will-change-transform" style={{ animationDelay: '2s', background: 'radial-gradient(circle, rgba(140,82,48,0.15) 0%, transparent 70%)' }} />
-    <div className="absolute bottom-[-20%] left-[20%] w-[50vw] h-[50vw] animate-blob will-change-transform" style={{ animationDelay: '4s', background: 'radial-gradient(circle, rgba(74,49,32,0.2) 0%, transparent 70%)' }} />
+    <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] animate-blob will-change-transform" style={{ background: 'radial-gradient(circle, rgba(250,204,21,0.15) 0%, transparent 70%)' }} />
+    <div className="absolute top-[30%] right-[-10%] w-[60vw] h-[60vw] animate-blob will-change-transform" style={{ animationDelay: '2s', background: 'radial-gradient(circle, rgba(30,64,175,0.15) 0%, transparent 70%)' }} />
+    <div className="absolute bottom-[-20%] left-[20%] w-[50vw] h-[50vw] animate-blob will-change-transform" style={{ animationDelay: '4s', background: 'radial-gradient(circle, rgba(17,24,39,0.2) 0%, transparent 70%)' }} />
     <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
   </div>
 ));
@@ -240,12 +240,12 @@ const Hero = () => {
   return (
     <section id="hero" ref={container} className="relative h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-background z-0 hero-bg will-change-transform">
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at center, rgba(193,155,118,0.15) 0%, transparent 60%)' }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at center, rgba(250,204,21,0.15) 0%, transparent 60%)' }} />
       </div>
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
-        <p className="hero-title text-primary uppercase tracking-[0.3em] font-medium text-sm md:text-base mb-6">
+        <div className="hero-title inline-block bg-primary text-black px-4 py-2 rounded font-bold uppercase tracking-widest text-xs md:text-sm mb-6 shadow-[0_0_15px_rgba(250,204,21,0.5)]">
           Інституція власника у beauty-індустрії
-        </p>
+        </div>
         <h1 className="hero-title font-display text-5xl md:text-8xl font-bold mb-8 leading-tight tracking-tight">
           SYSTEM <br />
           <span className="text-gradient">BEAUTY</span>
@@ -309,8 +309,8 @@ const Reality = () => {
           ))}
         </div>
 
-        <div className="mt-12 reality-card glass-card p-8 border-red-900/30 bg-red-950/10 text-center">
-          <h3 className="text-2xl font-display text-red-400">У результаті: дохід має стелю.</h3>
+        <div className="mt-12 reality-card p-8 bg-accent text-center rounded-2xl border border-white/10">
+          <h3 className="text-2xl font-display text-white font-bold uppercase tracking-wide">У результаті: дохід має стелю.</h3>
         </div>
       </div>
     </section>
@@ -339,7 +339,7 @@ const MasterTrap = () => {
 
   return (
     <section id="trap" ref={container} className="py-40 px-4 relative flex items-center justify-center min-h-[80vh] overflow-hidden">
-      <div className="circle-bg absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full -z-10 will-change-transform" style={{ background: 'radial-gradient(circle, rgba(193,155,118,0.08) 0%, transparent 70%)' }} />
+      <div className="circle-bg absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full -z-10 will-change-transform" style={{ background: 'radial-gradient(circle, rgba(250,204,21,0.08) 0%, transparent 70%)' }} />
       <div className="max-w-4xl mx-auto text-center z-10">
         <ShieldAlert className="w-16 h-16 text-primary mx-auto mb-8" />
         <h2 className="font-display text-5xl md:text-7xl font-bold mb-8">Пастка майстра</h2>
@@ -364,7 +364,7 @@ const TheProblem = () => (
     <div className="max-w-4xl mx-auto">
       <h2 className="font-display text-4xl md:text-6xl font-bold mb-10">Головна причина</h2>
       <p className="text-2xl md:text-4xl font-light mb-8">Проблема не у клієнтах і не у ринку.</p>
-      <div className="inline-block bg-primary/20 text-primary border border-primary/30 px-8 py-4 rounded-full font-display text-2xl md:text-3xl font-bold shadow-2xl">
+      <div className="inline-block bg-primary text-black px-10 py-5 rounded-sm font-display text-3xl md:text-5xl font-bold shadow-[0_0_30px_rgba(250,204,21,0.3)] uppercase tracking-tighter transform -rotate-1">
         Проблема у ролі.
       </div>
       <p className="text-xl md:text-2xl mt-12 text-textMuted font-light">
@@ -432,7 +432,7 @@ const HorizontalCamps = ({ ready }) => {
       <div ref={scrollRef} className="flex gap-10 px-10 will-change-transform" style={{ width: 'max-content' }}>
         {camps.map((camp) => (
           <div key={camp.num} className="flex-shrink-0 w-[85vw] md:w-[60vw] lg:w-[35vw] glass-card p-10 flex flex-col h-[500px]">
-            <div className="text-primary font-display text-xl mb-4">КЕМП {camp.num}</div>
+            <div className="bg-primary text-black font-display font-bold text-sm mb-4 px-3 py-1 rounded inline-block w-max uppercase tracking-wider">КЕМП {camp.num}</div>
             <h3 className="text-3xl font-bold mb-2">{camp.title}</h3>
             <p className="text-textMuted mb-8 font-light">{camp.subtitle}</p>
             <div className="mt-auto space-y-4">
@@ -486,7 +486,7 @@ const Results = () => (
       </div>
 
       <div className="mt-20 p-12 glass-card bg-primary/10 border-primary/30 text-center rounded-3xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full" style={{ background: 'radial-gradient(circle, rgba(193,155,118,0.15) 0%, transparent 70%)' }} />
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full" style={{ background: 'radial-gradient(circle, rgba(250,204,21,0.15) 0%, transparent 70%)' }} />
         <h3 className="text-3xl md:text-5xl font-display font-bold mb-10 relative z-10">Головний результат</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 relative z-10">
           {resultLabels.map((t, i) => {

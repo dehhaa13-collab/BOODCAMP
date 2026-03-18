@@ -32,7 +32,7 @@ const NotFound = () => {
           style={{
             top: `${20 + mousePos.y * 10}%`,
             left: `${10 + mousePos.x * 10}%`,
-            background: 'radial-gradient(circle, rgba(193,155,118,0.12) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(250,204,21,0.12) 0%, transparent 70%)',
             transition: 'top 1.5s ease-out, left 1.5s ease-out',
           }}
         />
@@ -42,7 +42,7 @@ const NotFound = () => {
             bottom: `${-10 + mousePos.y * 15}%`,
             right: `${-5 + mousePos.x * 15}%`,
             animationDelay: '3s',
-            background: 'radial-gradient(circle, rgba(140,82,48,0.12) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(30,64,175,0.12) 0%, transparent 70%)',
             transition: 'bottom 1.5s ease-out, right 1.5s ease-out',
           }}
         />
@@ -52,7 +52,7 @@ const NotFound = () => {
             top: `${60 + mousePos.y * 8}%`,
             left: `${50 + mousePos.x * 8}%`,
             animationDelay: '5s',
-            background: 'radial-gradient(circle, rgba(74,49,32,0.15) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(17,24,39,0.15) 0%, transparent 70%)',
             transition: 'top 1.5s ease-out, left 1.5s ease-out',
           }}
         />
@@ -68,7 +68,7 @@ const NotFound = () => {
             className="font-display font-bold leading-none select-none"
             style={{
               fontSize: 'clamp(8rem, 25vw, 16rem)',
-              background: `radial-gradient(circle at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(193,155,118,0.4) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 100%)`,
+              background: `radial-gradient(circle at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(250,204,21,0.4) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 100%)`,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               transition: 'opacity 1s ease-out, transform 1s ease-out',
@@ -84,7 +84,7 @@ const NotFound = () => {
             className="mx-auto h-[2px] rounded-full"
             style={{
               width: mounted ? '120px' : '0px',
-              background: 'linear-gradient(90deg, transparent, rgba(193,155,118,0.6), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(250,204,21,0.6), transparent)',
               transition: 'width 1.2s ease-out 0.3s',
             }}
           />
@@ -128,14 +128,14 @@ const NotFound = () => {
             to="/"
             className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full font-medium text-base md:text-lg overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
             style={{
-              background: 'linear-gradient(135deg, rgba(193,155,118,0.15) 0%, rgba(193,155,118,0.05) 100%)',
-              border: '1px solid rgba(193,155,118,0.3)',
+              background: 'linear-gradient(135deg, rgba(250,204,21,0.15) 0%, rgba(250,204,21,0.05) 100%)',
+              border: '1px solid rgba(250,204,21,0.3)',
             }}
           >
             {/* Hover glow */}
             <span
               className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full"
-              style={{ background: 'radial-gradient(circle at center, rgba(193,155,118,0.15) 0%, transparent 70%)' }}
+              style={{ background: 'radial-gradient(circle at center, rgba(250,204,21,0.15) 0%, transparent 70%)' }}
             />
 
             <svg

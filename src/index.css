@@ -17,7 +17,7 @@
 }
 
 .primary-gradient {
-  background: linear-gradient(135deg, #c19b76 0%, #a4815a 100%);
+  background: linear-gradient(135deg, #FACC15 0%, #EAB308 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
