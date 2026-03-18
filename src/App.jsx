@@ -1,10 +1,207 @@
-import React, { useLayoutEffect, useRef, memo } from 'react';
-import { ReactLenis } from 'lenis/react';
+import React, { useLayoutEffect, useRef, memo, useState, useEffect, useCallback } from 'react';
+import { ReactLenis, useLenis } from 'lenis/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, CheckCircle2, TrendingUp, Users, ShieldAlert, Target, Award } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
+
+/* ─── Preloader ──────────────────────────────────────── */
+const Preloader = ({ onComplete }) => {
+  const [phase, setPhase] = useState('loading'); // loading → fadeOut → done
+
+  useEffect(() => {
+    // Wait for fonts + minimum display time
+    const fontPromise = document.fonts?.ready || Promise.resolve();
+    const minTime = new Promise(r => setTimeout(r, 1800));
+
+    Promise.all([fontPromise, minTime]).then(() => {
+      setPhase('fadeOut');
+      setTimeout(() => {
+        setPhase('done');
+        onComplete();
+      }, 800);
+    });
+  }, [onComplete]);
+
+  if (phase === 'done') return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-background"
+      style={{
+        transition: 'opacity 0.8s ease-out',
+        opacity: phase === 'fadeOut' ? 0 : 1,
+        pointerEvents: phase === 'fadeOut' ? 'none' : 'auto',
+      }}
+    >
+      {/* Subtle glow behind logo */}
+      <div
+        className="absolute w-[300px] h-[300px] rounded-full"
+        style={{
+          background: 'radial-gradient(circle, rgba(193,155,118,0.12) 0%, transparent 70%)',
+          animation: 'pulse 2s ease-in-out infinite',
+        }}
+      />
+
+      <div className="relative text-center">
+        {/* SB Monogram */}
+        <div className="relative inline-block">
+          <span
+            className="font-display text-7xl md:text-9xl font-bold tracking-tight inline-block"
+            style={{
+              background: 'linear-gradient(135deg, #c19b76 0%, #d5ac83 50%, #a4815a 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              animation: 'preloaderReveal 1s ease-out forwards',
+            }}
+          >
+            SB
+          </span>
+        </div>
+
+        {/* Loading bar */}
+        <div className="mt-8 w-32 h-[2px] mx-auto bg-accent/50 rounded-full overflow-hidden">
+          <div
+            className="h-full rounded-full"
+            style={{
+              background: 'linear-gradient(90deg, #c19b76, #d5ac83)',
+              animation: 'loadingBar 1.8s ease-in-out forwards',
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─── Scroll Progress Bar ────────────────────────────── */
+const ScrollProgress = () => {
+  const [progress, setProgress] = useState(0);
+
+  useLenis(({ progress: p }) => {
+    setProgress(p);
+  });
+
+  return (
+    <div className="fixed top-0 left-0 w-full h-[3px] z-[100] pointer-events-none">
+      <div
+        className="h-full will-change-transform"
+        style={{
+          width: `${progress * 100}%`,
+          background: 'linear-gradient(90deg, #c19b76, #d5ac83, #c19b76)',
+          boxShadow: '0 0 12px rgba(193,155,118,0.4)',
+          transition: 'width 0.05s linear',
+        }}
+      />
+    </div>
+  );
+};
+
+/* ─── Navigation ─────────────────────────────────────── */
+const navItems = [
+  { label: 'Реальність', id: 'reality' },
+  { label: 'Пастка', id: 'trap' },
+  { label: 'Причина', id: 'problem' },
+  { label: 'Програма', id: 'camps' },
+  { label: 'Результат', id: 'results' },
+];
+
+const Navigation = () => {
+  const [visible, setVisible] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
+
+  useLenis(({ scroll }) => {
+    setVisible(scroll > window.innerHeight * 0.5);
+  });
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: '-40% 0px -40% 0px', threshold: 0 }
+    );
+
+    navItems.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollTo = useCallback((id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
+  return (
+    <nav
+      className="fixed top-0 left-0 right-0 z-[90] transition-all duration-500"
+      style={{
+        transform: visible ? 'translateY(0)' : 'translateY(-100%)',
+        opacity: visible ? 1 : 0,
+      }}
+    >
+      {/* Glass background */}
+      <div className="absolute inset-0 bg-background/70 backdrop-blur-md border-b border-white/5" />
+
+      <div className="relative max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        {/* Brand */}
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="font-display font-bold text-xl tracking-tight hover:text-primary transition-colors duration-200"
+        >
+          S<span className="text-primary">B</span>
+        </button>
+
+        {/* Nav Links */}
+        <div className="hidden md:flex items-center gap-1">
+          {navItems.map(({ label, id }) => (
+            <button
+              key={id}
+              onClick={() => scrollTo(id)}
+              className="relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg group"
+              style={{ color: activeSection === id ? '#c19b76' : '#9ca3af' }}
+            >
+              {/* Active indicator dot */}
+              <span
+                className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary transition-all duration-300"
+                style={{
+                  opacity: activeSection === id ? 1 : 0,
+                  transform: activeSection === id
+                    ? 'translateX(-50%) scale(1)'
+                    : 'translateX(-50%) scale(0)',
+                }}
+              />
+              <span className="group-hover:text-white transition-colors duration-200">{label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Mobile: minimal indicator */}
+        <div className="md:hidden flex items-center gap-2">
+          {navItems.map(({ id }) => (
+            <button
+              key={id}
+              onClick={() => scrollTo(id)}
+              className="w-2 h-2 rounded-full transition-all duration-300"
+              style={{
+                background: activeSection === id ? '#c19b76' : '#2c2c31',
+                transform: activeSection === id ? 'scale(1.3)' : 'scale(1)',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </nav>
+  );
+};
 
 /* ─── Background ─────────────────────────────────────── */
 const BackgroundEffects = memo(() => (
@@ -24,7 +221,7 @@ const Hero = () => {
     const ctx = gsap.context(() => {
       gsap.fromTo('.hero-title',
         { y: 80, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.2, ease: 'power4.out', stagger: 0.15 }
+        { y: 0, opacity: 1, duration: 1.2, ease: 'power4.out', stagger: 0.15, delay: 2 }
       );
       gsap.to('.hero-bg', {
         yPercent: 30,
@@ -41,7 +238,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <section ref={container} className="relative h-screen flex items-center justify-center overflow-hidden">
+    <section id="hero" ref={container} className="relative h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-background z-0 hero-bg will-change-transform">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at center, rgba(193,155,118,0.15) 0%, transparent 60%)' }} />
       </div>
@@ -88,7 +285,7 @@ const Reality = () => {
   ];
 
   return (
-    <section ref={container} className="py-32 px-4 relative z-10">
+    <section id="reality" ref={container} className="py-32 px-4 relative z-10">
       <div className="max-w-7xl mx-auto">
         <div className="mb-20 text-center md:text-left grid grid-cols-1 md:grid-cols-2 gap-10 items-end">
           <div>
@@ -141,8 +338,7 @@ const MasterTrap = () => {
   const trapItems = ['Перевантаження', 'Нестабільний дохід', 'Хаос у процесах', 'Залежність бізнесу'];
 
   return (
-    <section ref={container} className="py-40 px-4 relative flex items-center justify-center min-h-[80vh] overflow-hidden">
-      {/* Replaced blur-3xl with optimized radial gradient */}
+    <section id="trap" ref={container} className="py-40 px-4 relative flex items-center justify-center min-h-[80vh] overflow-hidden">
       <div className="circle-bg absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full -z-10 will-change-transform" style={{ background: 'radial-gradient(circle, rgba(193,155,118,0.08) 0%, transparent 70%)' }} />
       <div className="max-w-4xl mx-auto text-center z-10">
         <ShieldAlert className="w-16 h-16 text-primary mx-auto mb-8" />
@@ -164,7 +360,7 @@ const MasterTrap = () => {
 
 /* ─── The Problem ─────────────────────────────────────── */
 const TheProblem = () => (
-  <section className="py-32 px-4 my-20 bg-surface/80 text-white text-center border-y border-white/5 relative z-10 glass-card mx-4 rounded-3xl">
+  <section id="problem" className="py-32 px-4 my-20 bg-surface/80 text-white text-center border-y border-white/5 relative z-10 glass-card mx-4 rounded-3xl">
     <div className="max-w-4xl mx-auto">
       <h2 className="font-display text-4xl md:text-6xl font-bold mb-10">Головна причина</h2>
       <p className="text-2xl md:text-4xl font-light mb-8">Проблема не у клієнтах і не у ринку.</p>
@@ -209,7 +405,7 @@ const HorizontalCamps = () => {
   ];
 
   return (
-    <section ref={sectionRef} className="h-screen bg-transparent flex flex-col justify-center overflow-hidden relative z-10">
+    <section id="camps" ref={sectionRef} className="h-screen bg-transparent flex flex-col justify-center overflow-hidden relative z-10">
       <div className="px-10 mb-10 w-full flex-shrink-0">
         <h2 className="font-display text-5xl font-bold">Архітектура програми</h2>
         <p className="text-xl text-primary mt-2">4 ключові етапи роботи. 8 днів (9 місяців) стратегії.</p>
@@ -254,7 +450,7 @@ const resultIcons = [TrendingUp, Target, Award, Users];
 const resultLabels = ['Дохід у 2-3 рази', 'Особистий час', 'Системність', 'Нова роль'];
 
 const Results = () => (
-  <section className="py-32 px-4 relative">
+  <section id="results" className="py-32 px-4 relative">
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-20">
         <h2 className="font-display text-4xl md:text-6xl font-bold mb-6">Після програми</h2>
@@ -271,7 +467,6 @@ const Results = () => (
       </div>
 
       <div className="mt-20 p-12 glass-card bg-primary/10 border-primary/30 text-center rounded-3xl relative overflow-hidden">
-        {/* Replaced blur-[100px] with radial gradient */}
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full" style={{ background: 'radial-gradient(circle, rgba(193,155,118,0.15) 0%, transparent 70%)' }} />
         <h3 className="text-3xl md:text-5xl font-display font-bold mb-10 relative z-10">Головний результат</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 relative z-10">
@@ -308,9 +503,21 @@ const Footer = () => (
 
 /* ─── App ─────────────────────────────────────────────── */
 function App() {
+  const [loaded, setLoaded] = useState(false);
+  const handleLoaded = useCallback(() => setLoaded(true), []);
+
   return (
     <ReactLenis root>
-      <main className="bg-transparent text-textMain min-h-screen relative z-10 w-full">
+      <Preloader onComplete={handleLoaded} />
+      {loaded && <ScrollProgress />}
+      {loaded && <Navigation />}
+      <main
+        className="bg-transparent text-textMain min-h-screen relative z-10 w-full"
+        style={{
+          opacity: loaded ? 1 : 0,
+          transition: 'opacity 0.5s ease-out 0.2s',
+        }}
+      >
         <BackgroundEffects />
         <Hero />
         <Reality />
