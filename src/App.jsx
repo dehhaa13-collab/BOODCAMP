@@ -6,6 +6,102 @@ import { ArrowRight, CheckCircle2, TrendingUp, Users, ShieldAlert, Target, Award
 
 gsap.registerPlugin(ScrollTrigger);
 
+/* ─── Custom Cursor ────────────────────────────────────── */
+const CustomCursor = () => {
+  const [position, setPosition] = useState({ x: -100, y: -100 });
+  const [hovered, setHovered] = useState(false);
+  const [isTouch, setIsTouch] = useState(true);
+
+  useEffect(() => {
+    // Check if it's a touch device
+    if (window.matchMedia('(pointer: fine)').matches) {
+      setIsTouch(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isTouch) return;
+    const onMouseMove = (e) => setPosition({ x: e.clientX, y: e.clientY });
+    const onMouseOver = (e) => {
+      if (e.target.closest('button, a, .glass-card, .interactive')) {
+        setHovered(true);
+      } else {
+        setHovered(false);
+      }
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseover', onMouseOver);
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseover', onMouseOver);
+    };
+  }, [isTouch]);
+
+  if (isTouch) return null;
+
+  return (
+    <div
+      className="fixed top-0 left-0 pointer-events-none z-[99999] transition-transform duration-75 ease-out"
+      style={{
+        transform: `translate3d(${position.x}px, ${position.y}px, 0) translate(-50%, -50%) scale(${hovered ? 2.5 : 1})`,
+      }}
+    >
+      <div className="w-5 h-5 rounded-full bg-primary/80 backdrop-blur-[2px] shadow-[0_0_15px_rgba(250,204,21,0.6)] relative flex items-center justify-center transition-all duration-300">
+        {hovered && <div className="absolute inset-0 rounded-full bg-primary animate-ping opacity-40" />}
+      </div>
+    </div>
+  );
+};
+
+/* ─── Tilt Card ──────────────────────────────────────── */
+const TiltCard = ({ children, className, ...props }) => {
+  const [styles, setStyles] = useState({});
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Scale rotation bounds based on element size, max 10 degrees
+    const xPct = (x / rect.width - 0.5) * 2; 
+    const yPct = (y / rect.height - 0.5) * 2;
+    
+    const rotateX = -yPct * 8;
+    const rotateY = xPct * 8;
+    
+    setStyles({
+      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
+      transition: 'none'
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setStyles({
+      transform: `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`,
+      transition: 'transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)'
+    });
+  };
+
+  return (
+    <div 
+      className={`relative group ${className}`} 
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ ...styles, transformStyle: 'preserve-3d' }}
+      {...props}
+    >
+      <div 
+        className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-[0.03] transition-opacity duration-300 pointer-events-none rounded-[inherit]" 
+        style={{ transform: 'translateZ(-10px)' }}
+      />
+      <div className="h-full w-full" style={{ transform: 'translateZ(20px)' }}>
+        {children}
+      </div>
+    </div>
+  );
+};
+
 /* ─── Preloader ──────────────────────────────────────── */
 const Preloader = ({ onComplete }) => {
   const [phase, setPhase] = useState('loading'); // loading → fadeOut → done
@@ -302,10 +398,10 @@ const Reality = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {items.map((item, i) => (
-            <div key={i} className="reality-card glass-card p-8">
+            <TiltCard key={i} className="reality-card glass-card p-8 interactive border-white/5 hover:border-primary/20 transition-colors duration-300">
               <h3 className="text-xl font-medium mb-4 text-primary">{item.title}</h3>
               <p className="text-textMuted">{item.desc}</p>
-            </div>
+            </TiltCard>
           ))}
         </div>
 
@@ -429,9 +525,9 @@ const HorizontalCamps = ({ ready }) => {
         <h2 className="font-display text-5xl font-bold">Архітектура програми</h2>
         <p className="text-xl text-primary mt-2">4 ключові етапи роботи. 8 днів (9 місяців) стратегії.</p>
       </div>
-      <div ref={scrollRef} className="flex gap-10 px-10 will-change-transform" style={{ width: 'max-content' }}>
+      <div ref={scrollRef} className="flex gap-10 px-10 will-change-transform pb-20 pt-10" style={{ width: 'max-content' }}>
         {camps.map((camp) => (
-          <div key={camp.num} className="flex-shrink-0 w-[85vw] md:w-[60vw] lg:w-[35vw] glass-card p-10 flex flex-col h-[500px]">
+          <TiltCard key={camp.num} className="flex-shrink-0 w-[85vw] md:w-[60vw] lg:w-[35vw] glass-card p-10 flex flex-col h-[500px] interactive border-white/5 hover:border-primary/30 transition-colors duration-300">
             <div className="bg-primary text-black font-display font-bold text-sm mb-4 px-3 py-1 rounded inline-block w-max uppercase tracking-wider">КЕМП {camp.num}</div>
             <h3 className="text-3xl font-bold mb-2">{camp.title}</h3>
             <p className="text-textMuted mb-8 font-light">{camp.subtitle}</p>
@@ -448,7 +544,7 @@ const HorizontalCamps = ({ ready }) => {
                 </ul>
               </div>
             </div>
-          </div>
+          </TiltCard>
         ))}
       </div>
     </section>
@@ -525,8 +621,6 @@ function App() {
   const [loaded, setLoaded] = useState(false);
   const handleLoaded = useCallback(() => {
     setLoaded(true);
-    // Refresh ALL ScrollTrigger instances after content becomes visible
-    // Double-RAF ensures the browser has painted the visible layout
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
@@ -536,6 +630,7 @@ function App() {
 
   return (
     <ReactLenis root>
+      <CustomCursor />
       <Preloader onComplete={handleLoaded} />
       {loaded && <ScrollProgress />}
       {loaded && <Navigation />}

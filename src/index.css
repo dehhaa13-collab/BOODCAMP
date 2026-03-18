@@ -8,6 +8,13 @@
   body {
     @apply bg-background text-textMain font-sans antialiased overflow-x-hidden;
   }
+  
+  /* Hide default cursor only on desktops (where mouse is used) */
+  @media (pointer: fine) {
+    *, body, a, button {
+      cursor: none !important;
+    }
+  }
 }
 
 .text-gradient {
