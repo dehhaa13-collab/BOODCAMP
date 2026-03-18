@@ -191,21 +191,26 @@ const Preloader = ({ onComplete }) => {
 
 /* ─── Scroll Progress Bar ────────────────────────────── */
 const ScrollProgress = () => {
-  const [progress, setProgress] = useState(0);
+  const barRef = useRef(null);
 
   useLenis(({ progress: p }) => {
-    setProgress(p);
+    // Direct DOM manipulation mapping to 0.0 - 1.0 scale
+    // Bypass React render cycles completely for 120 FPS
+    if (barRef.current) {
+      barRef.current.style.transform = `scaleX(${p})`;
+    }
   });
 
   return (
     <div className="fixed top-0 left-0 w-full h-[3px] z-[100] pointer-events-none">
       <div
-        className="h-full will-change-transform"
+        ref={barRef}
+        className="w-full h-full origin-left will-change-transform"
         style={{
-          width: `${progress * 100}%`,
+          transform: 'scaleX(0)',
           background: 'linear-gradient(90deg, #FACC15, #FDE047, #FACC15)',
           boxShadow: '0 0 12px rgba(250,204,21,0.4)',
-          transition: 'width 0.05s linear',
+          transition: 'transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1)', // micro-smoothing
         }}
       />
     </div>
