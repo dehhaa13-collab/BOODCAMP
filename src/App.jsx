@@ -77,6 +77,9 @@ const TiltCard = ({ children, className, ...props }) => {
   const [styles, setStyles] = useState({});
 
   const handleMouseMove = (e) => {
+    // Completely disable 3D tilt effect on touch phones/tablets
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
