@@ -375,34 +375,53 @@ const TheProblem = () => (
 );
 
 /* ─── Horizontal Camps ────────────────────────────────── */
-const HorizontalCamps = () => {
+const camps = [
+  { num: 1, title: 'Стан власника', subtitle: 'Чому майстри залишаються майстрами', items: ['Мислення працівника vs власника', 'Енергія, дисципліна і гроші', 'Фінансовий потолок майстра', 'Формування візії бізнесу'] },
+  { num: 2, title: 'Фінансова формула', subtitle: 'Як працюють гроші у beauty', items: ['Формула доходу', 'Ячейка майстра/салону', 'Середній чек та повторні продажі', 'Бізнес-метрики: ROI, LTV, NPS'] },
+  { num: 3, title: 'Система і команда', subtitle: 'Як перестати бути вузьким горлом', items: ['Делегування процесів', 'Ролі в команді', 'Стандарти сервісу', 'Система управління студією'] },
+  { num: 4, title: 'Масштаб і стратегія', subtitle: 'Як масштабувати бізнес', items: ['Продуктові напрямки (навчання)', 'Стратегія на 12 місяців', 'Розвиток бренду', 'Робота з ризиками'] },
+];
+
+const HorizontalCamps = ({ ready }) => {
   const sectionRef = useRef(null);
   const scrollRef = useRef(null);
+  const ctxRef = useRef(null);
 
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      const scrollWidth = scrollRef.current.scrollWidth - window.innerWidth;
-      gsap.to(scrollRef.current, {
-        x: -scrollWidth,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          pin: true,
-          scrub: 1,
-          end: () => `+=${scrollWidth}`,
-          invalidateOnRefresh: true,
-        },
-      });
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
+  useEffect(() => {
+    // Only initialize GSAP AFTER preloader is done and content is visible
+    if (!ready || !sectionRef.current || !scrollRef.current) return;
 
-  const camps = [
-    { num: 1, title: 'Стан власника', subtitle: 'Чому майстри залишаються майстрами', items: ['Мислення працівника vs власника', 'Енергія, дисципліна і гроші', 'Фінансовий потолок майстра', 'Формування візії бізнесу'] },
-    { num: 2, title: 'Фінансова формула', subtitle: 'Як працюють гроші у beauty', items: ['Формула доходу', 'Ячейка майстра/салону', 'Середній чек та повторні продажі', 'Бізнес-метрики: ROI, LTV, NPS'] },
-    { num: 3, title: 'Система і команда', subtitle: 'Як перестати бути вузьким горлом', items: ['Делегування процесів', 'Ролі в команді', 'Стандарти сервісу', 'Система управління студією'] },
-    { num: 4, title: 'Масштаб і стратегія', subtitle: 'Як масштабувати бізнес', items: ['Продуктові напрямки (навчання)', 'Стратегія на 12 місяців', 'Розвиток бренду', 'Робота з ризиками'] },
-  ];
+    // Wait for next frame so the browser has painted with correct dimensions
+    const raf = requestAnimationFrame(() => {
+      // Clean up previous context if it exists (e.g. on hot reload)
+      if (ctxRef.current) ctxRef.current.revert();
+
+      ctxRef.current = gsap.context(() => {
+        // Dynamic function ensures correct calculation even on resize
+        const getScrollWidth = () => {
+          if (!scrollRef.current) return 0;
+          return scrollRef.current.scrollWidth - window.innerWidth;
+        };
+
+        gsap.to(scrollRef.current, {
+          x: () => -getScrollWidth(),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            pin: true,
+            scrub: 1,
+            end: () => `+=${getScrollWidth()}`,
+            invalidateOnRefresh: true,
+          },
+        });
+      }, sectionRef);
+    });
+
+    return () => {
+      cancelAnimationFrame(raf);
+      if (ctxRef.current) ctxRef.current.revert();
+    };
+  }, [ready]);
 
   return (
     <section id="camps" ref={sectionRef} className="h-screen bg-transparent flex flex-col justify-center overflow-hidden relative z-10">
@@ -504,7 +523,16 @@ const Footer = () => (
 /* ─── App ─────────────────────────────────────────────── */
 function App() {
   const [loaded, setLoaded] = useState(false);
-  const handleLoaded = useCallback(() => setLoaded(true), []);
+  const handleLoaded = useCallback(() => {
+    setLoaded(true);
+    // Refresh ALL ScrollTrigger instances after content becomes visible
+    // Double-RAF ensures the browser has painted the visible layout
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+    });
+  }, []);
 
   return (
     <ReactLenis root>
@@ -523,7 +551,7 @@ function App() {
         <Reality />
         <MasterTrap />
         <TheProblem />
-        <HorizontalCamps />
+        <HorizontalCamps ready={loaded} />
         <Results />
         <Footer />
       </main>
