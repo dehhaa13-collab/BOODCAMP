@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef, useState, useEffect, useCallback, memo 
 import { ReactLenis, useLenis } from 'lenis/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, TrendingUp, Users, ShieldAlert, Target, Award } from 'lucide-react';
+import { ArrowRight, CheckCircle2, TrendingUp, Users, ShieldAlert, Target, Award } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
